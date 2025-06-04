@@ -14,6 +14,8 @@ import CreateBlog from "./pages/CreateBlog";
 import { ToastContainer } from 'react-toastify';
 import AllBlogs from "./pages/AllBlogs";
 import Users from "./pages/Users";
+import UserProfile from "./pages/UserProfile";
+import SingleCategory from "./pages/SingleCategory";
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +37,8 @@ function App() {
           <Route path="/createblog" element={<CreateBlog />} />
           <Route path="/allblogs" element={<AllBlogs />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/userprofile/:id" element={<UserProfile/>} />
+          <Route path="/category/:categoryName" element={<SingleCategory/>} />
 
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         </Route>

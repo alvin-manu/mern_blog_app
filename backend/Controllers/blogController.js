@@ -84,7 +84,57 @@ export const viewBlog = async (req, res) => {
             .populate({ path: 'category', select: 'categoryName' })
         if (blogArticle) {
             return res.status(201).json(blogArticle)
-        }else{
+        } else {
+            return res.status(401).json({ message: "Error" })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// GetUserPosts on profile
+export const getUserPosts = async (req, res) => {
+    try {
+        const id = req.user._id;
+        const userBlogs = await Blog.find({ user: id }).populate({ path: 'user', select: 'name avatar' })
+            .populate({ path: 'category', select: 'categoryName' })
+        if (userBlogs) {
+            return res.status(201).json({ message: "User Blogs", userBlogs })
+        } else {
+            return res.status(401).json({ message: "User Blogs Not Found" })
+        }
+    } catch (error) {
+        return res.status(401).json({ message: "Server Error", error });
+    }
+}
+
+export const getUserBlogsById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const blogArticles = await Blog.find({ user: id }).populate({ path: 'user', select: 'name avatar' })
+            .populate({ path: 'category', select: 'categoryName' })
+        if (blogArticles) {
+            return res.status(201).json({blogArticles})
+        } else {
+            return res.status(401).json({ message: "Error" })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+// getting blogs based on category
+export const getCategoryBlogsById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const blogArticles = await Blog.find({ category: id }).populate({ path: 'user', select: 'name avatar' })
+            .populate({ path: 'category', select: 'categoryName' })
+        if (blogArticles) {
+            return res.status(201).json({blogArticles})
+        } else {
             return res.status(401).json({ message: "Error" })
         }
 

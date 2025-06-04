@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import cloudinary from '../config/cloudinary.js';
 
+// Register User
 export const registerUser = async (req, res) => {
     // data from frontend
     const { name, email, password } = req.body;
@@ -26,6 +27,7 @@ export const registerUser = async (req, res) => {
     }
 }
 
+// Login User
 export const loginUser = async (req, res) => {
 
     try {
@@ -42,6 +44,7 @@ export const loginUser = async (req, res) => {
                 name: existingUser.name,
                 email: existingUser.email,
                 websiteLink: existingUser.websiteLink,
+                role: existingUser.role,
                 bio: existingUser.bio,
                 avatar: existingUser.avatar,
             }
@@ -53,6 +56,7 @@ export const loginUser = async (req, res) => {
     }
 }
 
+// GetUser
 export const getUser = (req, res) => {
     try {
         const user = req.user;
@@ -61,13 +65,30 @@ export const getUser = (req, res) => {
         } else {
             return res.status(401).json({ message: "User Not Found" })
         }
-
     } catch (error) {
         return res.status(401).json({ message: "Server Error", error });
 
     }
 }
 
+export const getUserById = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const userDetails = await User.find({_id: id});    
+        if (userDetails) {
+            return res.status(201).json({ message: "User Found", userDetails })
+        } else {
+            return res.status(401).json({ message: "User Not Found" })
+        }
+    } catch (error) {
+        return res.status(401).json({ message: "Server Error", error });
+
+    }
+}
+
+
+
+// UpdateUser
 export const updateUser = async (req, res) => {
     try {
         const { name, email, bio, websiteLink } = req.body
@@ -76,7 +97,6 @@ export const updateUser = async (req, res) => {
         user.email = email
         user.bio = bio
         user.websiteLink = websiteLink
-        console.log(req.file)
 
         if (req.file) {
             // Upload an image
@@ -91,7 +111,7 @@ export const updateUser = async (req, res) => {
                 });
             user.avatar = uploadResult.secure_url
         }
-        
+
         await user.save()
         return res.status(200).json({ message: "Profile updated successfully", user });
 
@@ -101,16 +121,82 @@ export const updateUser = async (req, res) => {
 }
 
 // for admin
-export const getAllUsers = async (req , res)=>{
+export const getAllUsers = async (req, res) => {
     try {
         const getAllUser = await User.find().select('-password');
-        if(getAllUser){
-            return res.status(201).json({getAllUser})
-        }else{
-            return res.status(401).json({message:"Something went wrong"})
-        }  
+        if (getAllUser) {
+            return res.status(201).json({ getAllUser })
+        } else {
+            return res.status(401).json({ message: "Something went wrong" })
+        }
     } catch (error) {
         console.log(error)
     }
+}
 
+// export const updateUserModel = async ()=>{
+//     await User.updateMany(
+//     { 
+//         role: { $exists: false }, // Only update docs where 'role' is missing
+//         isBanned: { $exists: false } // AND 'isBanned' is missing
+//     },
+//     { 
+//         $set: { 
+//             role: 'user', // Set default role
+//             isBanned: false // Set default ban status
+//         } 
+//     }
+// );
+// console.log("Updated Successfully")
+// }
+
+export const banUser = async (req, res) => {
+    const { id } = req.params
+    try {
+        console.log(req.user)
+        if (req.user.role === 'admin') {
+            const getUser = await User.findByIdAndUpdate(
+                id,
+                { isBanned: true },
+                { new: true }
+            );
+            if (getUser) {
+                 res.status(200).json({ message: 'User has been banned.' });
+            } else {
+                return res.status(404).json({ message: 'User not found.' });
+            }
+        }
+        else {
+            return res.status(401).json({ message: "Unauthorised User" })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const unbanUser = async (req, res) => {
+    const { id } = req.params
+    try {
+        console.log(req.user)
+        if (req.user.role === 'admin') {
+            const getUser = await User.findByIdAndUpdate(
+                id,
+                { isBanned: false },
+                { new: true }
+            );
+            if (getUser) {
+                 res.status(200).json({ message: 'User has been Unbanned.' });
+            } else {
+                return res.status(404).json({ message: 'User not found.' });
+            }
+        }
+        else {
+            return res.status(401).json({ message: "Unauthorised User" })
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
 }

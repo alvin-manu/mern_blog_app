@@ -1,34 +1,44 @@
 import React, { useState } from "react";
-import { deleteCategoryApi } from "../Services/allApi";
+import { banUserApi } from "../Services/allApi";
 import { toast } from "react-toastify";
 
-const DeleteCategory = ({ categoryId }) => {
+const BanUser = ({ id, user }) => {
   const [open, setopen] = useState(false);
-  const [deletCategory, setDeleteCategory] = useState({
-    categoryId: categoryId,
-  });
-  //   console.log(categoryId);
-  const deleteCategorylist = async () => {
+
+  const banUserfn = async () => {
+      console.log("first")
     try {
-      const res = await deleteCategoryApi(deletCategory);
-      if (res.status === 201) {
+      const token = sessionStorage.getItem("token");
+      const reqheader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+      };
+      const res = await banUserApi(id, reqheader);
+      if (res.status === 200) {
         toast.success(res.data.message);
         setopen(!open)
+      } else if (res.status === 404) {
+        toast.warning(res.data.message);
+      } else if (res.status === 401) {
+        toast.error(res.data.message);
+      }else{
+        toast.error("Something Went Wrong");
       }
     } catch (error) {
       toast.error(error);
     }
   };
+
   return (
     <>
       <button
         type="button"
-        className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-red-600 hover:text-red-800 focus:outline-hidden focus:text-red-800 disabled:opacity-50 disabled:pointer-events-none dark:text-red-500 dark:hover:text-red-400 dark:focus:text-red-400"
         onClick={() => {
           setopen(!open);
         }}
       >
-        <i className="fa-solid fa-trash"></i> Delete
+        <i className="fa-solid fa-ban me-1"></i>
+        Ban
       </button>
       {open ? (
         <div
@@ -80,15 +90,18 @@ const DeleteCategory = ({ categoryId }) => {
                   />
                 </svg>
                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                  Are you sure you want to delete this category?
+                  Are you sure you want to Ban this user {user}?
                 </h3>
                 <button
                   data-modal-hide="popup-modal"
                   type="button"
                   className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                  onClick={deleteCategorylist}
+                  onClick={() => {
+                    banUserfn();
+                  }}
                 >
-                  <i className="fa-solid fa-trash me-2 text-sm"></i>DELETE
+                  <i className="fa-solid fa-ban me-1"></i>
+                  Ban
                 </button>
                 <button
                   data-modal-hide="popup-modal"
@@ -111,4 +124,4 @@ const DeleteCategory = ({ categoryId }) => {
   );
 };
 
-export default DeleteCategory;
+export default BanUser;

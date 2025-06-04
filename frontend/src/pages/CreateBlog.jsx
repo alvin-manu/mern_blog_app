@@ -30,10 +30,10 @@ const CreateBlog = () => {
     setBlogContent(html);
   };
 
-  const addblogfn= async ()=>{
-    const {title, category}= form;
-    if(!title || !category || !featuredimage || !blogContent){
-      return toast.warning("Please fill all the fields")
+  const addblogfn = async () => {
+    const { title, category } = form;
+    if (!title || !category || !featuredimage || !blogContent) {
+      return toast.warning("Please fill all the fields");
     }
     const token = sessionStorage.getItem("token");
     const reqheader = {
@@ -41,22 +41,21 @@ const CreateBlog = () => {
       Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
     };
     const newform = new FormData();
-    newform.append('title',title)
-    newform.append('category',category)
-    newform.append('featuredImage',featuredimage)
-    newform.append('content',blogContent)
-    const res= await addBlogApi(newform,reqheader)
+    newform.append("title", title);
+    newform.append("category", category);
+    newform.append("featuredImage", featuredimage);
+    newform.append("content", blogContent);
+    const res = await addBlogApi(newform, reqheader);
     toast.success(res.data.message);
-
-  }
-    // to make a string to titlecase
+  };
+  // to make a string to titlecase
   function toTitleCase(str) {
-  return str
-    .toLowerCase()
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
   return (
     <>
       <div className="p-3 md:p-10">
@@ -91,7 +90,9 @@ const CreateBlog = () => {
           <select
             id="categories"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            onChange={(e) => setForm({ ...form, category: e.target.value.toLowerCase() })}
+            onChange={(e) =>
+              setForm({ ...form, category: e.target.value.toLowerCase() })
+            }
           >
             {allcategory?.map((item) => (
               <option key={item._id} value={item._id}>
@@ -147,7 +148,7 @@ const CreateBlog = () => {
           </label>
         </div>
 
-            {/* blog content */}
+        {/* blog content */}
         <div className="mb-6">
           <label
             for="blog_content"

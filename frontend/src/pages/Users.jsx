@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsersApi } from "../Services/allApi";
+import BanUser from "../components/BanUser";
+import UnbanUser from "../components/UnbanUser";
 
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -19,27 +21,6 @@ const Users = () => {
   useEffect(() => {
     getAllUserData();
   }, []);
-
-  const users = [
-    {
-      _id: 1,
-      name: "John Doe",
-      email: "john@blog.com",
-      bio: "Tech enthusiast and content creator",
-      avatar: "",
-      websiteLink: "https://johndoe.com",
-      status: "active",
-    },
-    {
-      _id: 2,
-      name: "Jane Smith",
-      email: "jane@blog.com",
-      bio: "Travel blogger exploring the world",
-      avatar: "https://example.com/avatar.jpg",
-      websiteLink: "https://janesmith.com",
-      status: "Banned",
-    },
-  ];
 
   return (
     <div className=" p-3 md:p-6 bg-white rounded-xl border border-gray-200">
@@ -165,12 +146,12 @@ const Users = () => {
                     <td className="px-6 py-4">
                       <span
                         className={`px-3 py-1 rounded-full text-sm ${
-                          user?.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                          user?.isBanned
+                            ? "bg-red-100 text-red-800"
+                            : "bg-green-100 text-green-800"
                         }`}
                       >
-                        {user?.status}
+                        {user?.isBanned ? "Banned" : "Active"}
                       </span>
                     </td>
                     <td className="px-6 py-4 flex space-x-4">
@@ -178,10 +159,15 @@ const Users = () => {
                         <i class="fa-sharp-duotone fa-solid fa-eye me-1"></i>
                         View
                       </button>
-                      <button className="text-red-600 hover:text-red-900 flex items-center">
-                        <i className="fa-solid fa-ban me-1"></i>
-                        Ban
-                      </button>
+                      {user?.isBanned ? (
+                        <button className="text-red-600 hover:text-red-900 flex items-center">
+                          <UnbanUser id={user?._id} user={user?.name} />
+                        </button>
+                      ) : (
+                        <button className="text-red-600 hover:text-red-900 flex items-center">
+                          <BanUser id={user?._id} user={user?.name} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

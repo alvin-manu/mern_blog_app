@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { allBlogApi, deleteBlogApi } from "../Services/allApi";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -13,6 +14,8 @@ const AllBlogs = () => {
   useEffect(() => {
     allBlogs();
   }, []);
+
+  const navigate = useNavigate()
 
   const handledeleteBlog = async(id)=>{
     const res = await deleteBlogApi(id);
@@ -29,6 +32,10 @@ const AllBlogs = () => {
     .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+const gotoBlog = (id)=>{
+  navigate(`/blog/${id}`)
 }
   return (
     <div className="p-6 bg-white rounded-xl border border-gray-200">
@@ -109,8 +116,8 @@ const AllBlogs = () => {
                   onClick={()=>handledeleteBlog(blog._id)}>
                     <TrashIcon className="h-5 w-5" />
                   </button>
-                  <button className="text-green-600 hover:text-green-900 p-1.5 rounded hover:bg-green-50">
-                    <EyeIcon className="h-5 w-5" />
+                  <button className="text-green-600 hover:text-green-900 p-1.5 rounded hover:bg-green-50" onClick={()=>{gotoBlog(blog?._id)}}>
+                    <EyeIcon className="h-5 w-5"/>
                   </button>
                 </td>
               </tr>

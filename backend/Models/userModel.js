@@ -28,7 +28,16 @@ const userSchema = mongoose.Schema({
     websiteLink: {
         type: String,
         trim: true
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: "user"
+    },
+    isBanned: {
+        type: Boolean,
+        default: false
     }
-})
+}, { timestamps: true })
 
 export const User = mongoose.model("user", userSchema)

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import ArticleCard from "../components/ArticleCard";
 import Header from "../components/Header";
 import { useEffect } from "react";
-import { getUser, updateUserApi } from "../Services/allApi";
+import { getUser, getUserPosts, updateUserApi } from "../Services/allApi";
 import { toast } from "react-toastify";
 
 export default function Profile() {
@@ -13,6 +13,7 @@ export default function Profile() {
   const [user, setUser] = useState({});
   // form state for storing a copy of user credentials
   const [form, setForm] = useState({});
+  const [blogs, setBlogs] = useState();
   const fileInputRef = useRef(null);
 
   // fetching user data
@@ -42,9 +43,28 @@ export default function Profile() {
     }
   };
 
+  const fetchUserPosts = async () => {
+    const token = sessionStorage.getItem("token");
+    const reqheader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+    };
+    const response = await getUserPosts(reqheader);
+    console.log(response);
+    if (response.staus === 401) {
+      return console.log(response.response.data.message);
+    } else if (response.status === 201) {
+      // console.log(response.data.user);
+      setBlogs(response.data.userBlogs);
+    } else {
+      console.log("Something Went Wrong");
+    }
+  };
+
   // onloading the profile page
   useEffect(() => {
     fetchUser();
+    fetchUserPosts();
   }, []);
 
   const handleChange = (e) => {
@@ -272,9 +292,11 @@ export default function Profile() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ArticleCard />
-            <ArticleCard />
-            <ArticleCard />
+            {blogs?.length >0 ?
+            blogs?.map((item)=>(
+            <ArticleCard blog = {item}/>
+            )):
+            <p>No Posts Found</p> }
             
           </div>
         </div>

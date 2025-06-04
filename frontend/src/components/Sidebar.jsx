@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { getAllCategoryApi } from "../Services/allApi";
 import { useSelector } from "react-redux";
+import SingleCategory from "../pages/SingleCategory";
 
 const Sidebar = ({ isSidebarOpen }) => {
   const [allcategory, setAllCategory] = useState([]);
@@ -17,8 +18,6 @@ const Sidebar = ({ isSidebarOpen }) => {
     };
     getAllCategory();
   }, []);
-
-  console.log(allcategory);
 
   return (
     <aside
@@ -67,7 +66,7 @@ const Sidebar = ({ isSidebarOpen }) => {
               <span className="flex-1 ms-3 whitespace-nowrap">Write</span>
             </Link>
           </li>
-          {userData.user.email ? (
+          {userData.user.role === 'admin' ? (
             <ul className="space-y-2 font-medium">
               <li>
                 <Link
@@ -128,8 +127,6 @@ const Sidebar = ({ isSidebarOpen }) => {
           ) : (
             ""
           )}
-
-          
         </ul>
 
         {/* <li>
@@ -179,7 +176,11 @@ const Sidebar = ({ isSidebarOpen }) => {
           {allcategory.length > 0 &&
             allcategory.map((category) => (
               <li>
-                <Link className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                <Link
+                  to={`/category/${category.categoryName.toLowerCase()}`}
+                  state={{ data: category }}
+                  className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group"
+                >
                   <i class="fa-regular fa-circle-dot shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"></i>
                   <span className="flex-1 ms-3 whitespace-nowrap">
                     {category.categoryName.toUpperCase()}

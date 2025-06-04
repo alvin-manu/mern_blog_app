@@ -20,6 +20,7 @@ const AddCategory = () => {
       if (res.status === 201) {
         toast.success(res.data.message);
         navigate('/category')
+        setopen(!open)
       } else if (res.status === 401) {
         toast.warning("Category Already Exists");
       } else {

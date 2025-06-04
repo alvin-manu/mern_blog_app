@@ -18,6 +18,7 @@ const EditCategory = ({ item }) => {
         const res = await editCategoryApi(editCategory);
         if (res.status === 201) {
           toast.success(res.data.message);
+          setopen(!open)
         }
       } catch (error) {
         toast.error(error);

@@ -23,6 +23,6 @@ export const authMiddleware = async (req, res, next) => {
     // 5. Call next() to continue to the actual route
     next();
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized - Invalid token" });
+    res.status(401).json({ message: "Unauthorized User" });
   }
 };

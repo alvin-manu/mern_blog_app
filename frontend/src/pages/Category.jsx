@@ -19,7 +19,7 @@ const Category = () => {
   }, []);
 
   return (
-    <div className="p-6 md:p-12 min-h-screen">
+    <div className="p-6 bg-white rounded-xl border border-gray-200">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -62,24 +62,15 @@ const Category = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full inline-block">
+                        <div className="text-sm bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full inline-block">
                           {item?.slug}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-3">
-                          <EditCategory item={item}>
-                            <button className="text-indigo-600 hover:text-indigo-900 transition-colors p-2 rounded-lg hover:bg-indigo-50">
-                              <PencilSquareIcon className="h-5 w-5" />
-                              <span className="sr-only">Edit</span>
-                            </button>
-                          </EditCategory>
-                          <DeleteCategory categoryId={item._id}>
-                            <button className="text-red-600 hover:text-red-900 transition-colors p-2 rounded-lg hover:bg-red-50">
-                              <TrashIcon className="h-5 w-5" />
-                              <span className="sr-only">Delete</span>
-                            </button>
-                          </DeleteCategory>
+                          <EditCategory item={item}/>           
+                          <DeleteCategory categoryId={item._id}/>
+                            
                         </div>
                       </td>
                     </tr>
