@@ -73,8 +73,8 @@ export const getUser = (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const {id} = req.params;
-        const userDetails = await User.find({_id: id});    
+        const { id } = req.params;
+        const userDetails = await User.find({ _id: id });
         if (userDetails) {
             return res.status(201).json({ message: "User Found", userDetails })
         } else {
@@ -123,7 +123,19 @@ export const updateUser = async (req, res) => {
 // for admin
 export const getAllUsers = async (req, res) => {
     try {
-        const getAllUser = await User.find().select('-password');
+        const searchTerm = req.query.search; // Get the search term
+        let getAllUser;
+        if (searchTerm) {
+            // Search in name OR email (case insensitive)
+            getAllUser = await User.find({
+                $or: [
+                    { name: { $regex: searchTerm, $options: 'i' } },
+                    { email: { $regex: searchTerm, $options: 'i' } }
+                ]
+            }).select('-password');
+        }else{
+             getAllUser = await User.find().select('-password');
+        }
         if (getAllUser) {
             return res.status(201).json({ getAllUser })
         } else {
@@ -161,7 +173,7 @@ export const banUser = async (req, res) => {
                 { new: true }
             );
             if (getUser) {
-                 res.status(200).json({ message: 'User has been banned.' });
+                res.status(200).json({ message: 'User has been banned.' });
             } else {
                 return res.status(404).json({ message: 'User not found.' });
             }
@@ -187,7 +199,7 @@ export const unbanUser = async (req, res) => {
                 { new: true }
             );
             if (getUser) {
-                 res.status(200).json({ message: 'User has been Unbanned.' });
+                res.status(200).json({ message: 'User has been Unbanned.' });
             } else {
                 return res.status(404).json({ message: 'User not found.' });
             }

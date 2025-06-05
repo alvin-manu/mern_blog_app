@@ -3,6 +3,7 @@ import profile from "../assets/profile.jpg";
 import { Link } from "react-router-dom";
 
 function ArticleCard({ blog }) {
+  
   // function for description to show as plain text
   function getPlainTextPreview(html, maxLength = 88) {
     const tempDiv = document.createElement("div");
@@ -11,7 +12,6 @@ function ArticleCard({ blog }) {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   }
 
-  console.log(blog);
   return (
     <Link to={`/blog/${blog?._id}`}>
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">

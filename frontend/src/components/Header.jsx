@@ -8,8 +8,26 @@ const Header = ({ toggleSidebar }) => {
   const user = useSelector((state) => state.user);
   const [ismenuopen, setIsMenuOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const dispatch = useDispatch();
+
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleMobileSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+    setShowMobileSearch(!showMobileSearch)
+  };
+
+  const dispatch = useDispatch();
 
   const logOut = () => {
     dispatch(removeUser());
@@ -57,12 +75,18 @@ const Header = ({ toggleSidebar }) => {
           {/* Center Search (Desktop) */}
           <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
             <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-              />
-              <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute right-3 top-3.5" />
+              <form onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit">
+                  <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute right-3 top-3.5" />
+                </button>
+              </form>
             </div>
           </div>
 
@@ -138,12 +162,18 @@ const Header = ({ toggleSidebar }) => {
         {showMobileSearch && (
           <div className="lg:hidden mt-3 px-2">
             <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-              />
-              <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute right-3 top-3.5" />
+              <form onSubmit={handleMobileSearch}>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit">
+                  <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute right-3 top-3.5" />
+                </button>
+              </form>
             </div>
           </div>
         )}

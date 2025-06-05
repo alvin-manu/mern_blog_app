@@ -16,6 +16,7 @@ import AllBlogs from "./pages/AllBlogs";
 import Users from "./pages/Users";
 import UserProfile from "./pages/UserProfile";
 import SingleCategory from "./pages/SingleCategory";
+import SearchResultsPage from "./pages/SearchResultsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +40,8 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/userprofile/:id" element={<UserProfile/>} />
           <Route path="/category/:categoryName" element={<SingleCategory/>} />
+
+          <Route path="/search" element={<SearchResultsPage />} />
 
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         </Route>

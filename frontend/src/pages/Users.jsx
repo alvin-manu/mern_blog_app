@@ -2,25 +2,54 @@ import React, { useEffect, useState } from "react";
 import { getAllUsersApi } from "../Services/allApi";
 import BanUser from "../components/BanUser";
 import UnbanUser from "../components/UnbanUser";
+import { useNavigate } from "react-router";
 
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState([]);
+
   const getAllUserData = async () => {
     const token = sessionStorage.getItem("token");
     const reqheader = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
     };
-    const res = await getAllUsersApi(reqheader);
+    const res = await getAllUsersApi("", reqheader);
     const result = res.data.getAllUser;
     if (result) {
       setAllUsers(result);
       console.log(result);
     }
   };
+
+  const searchUsers = async (searchTerm) => {
+    const token = sessionStorage.getItem("token");
+    const reqheader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token || ""}`,
+    };
+
+    const response = await getAllUsersApi(searchTerm, reqheader);
+    setAllUsers(response.data.getAllUser); // Update your state with filtered users
+  };
+
   useEffect(() => {
     getAllUserData();
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      searchUsers(searchTerm);
+    }, 500); // Wait 500ms after typing stops
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const navigate = useNavigate();
+
+  const viewUserProfile = (id) => {
+    navigate(`/userprofile/${id}`);
+  };
 
   return (
     <div className=" p-3 md:p-6 bg-white rounded-xl border border-gray-200">
@@ -42,6 +71,10 @@ const Users = () => {
                 type="search"
                 placeholder="Search users..."
                 className="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={searchTerm}
+                onInput={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
               />
               <svg
                 className="w-5 h-5 absolute left-3 top-3 text-gray-400"
@@ -155,7 +188,12 @@ const Users = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 flex space-x-4">
-                      <button className="text-green-600 hover:text-green-900 flex items-center">
+                      <button
+                        className="text-green-600 hover:text-green-900 flex items-center"
+                        onClick={() => {
+                          viewUserProfile(user?._id);
+                        }}
+                      >
                         <i class="fa-sharp-duotone fa-solid fa-eye me-1"></i>
                         View
                       </button>

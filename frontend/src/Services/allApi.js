@@ -46,15 +46,19 @@ export const addBlogApi = async (reqBody, reqHeader) => {
 export const allBlogApi = async () => {
     return await commonApi('GET', `${serverUrl}/api/admin/allblog`, {}, {})
 }
+
 // delete a blog for admin
 export const deleteBlogApi = async (id) => {
     return await commonApi("DELETE", `${serverUrl}/api/admin/delete-blog/${id}`, {}, "")
 }
 
 // to get userlist to admin
-export const getAllUsersApi = async (reqheader) => {
-    return await commonApi('GET', `${serverUrl}/api/admin/getallusers`, {}, reqheader)
-}
+
+export const getAllUsersApi = (searchTerm = "", reqheader) => {
+    // Only create query string if searchTerm exists
+    const queryString = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
+    return commonApi("GET",`${serverUrl}/api/admin/getallusers${queryString}`,"",reqheader);
+};
 
 export const viewBlogArticleApi = async (id) => {
     return await commonApi('GET', `${serverUrl}/api/viewblog/${id}`, {}, "")
@@ -83,3 +87,7 @@ export const getUserPostsByIdApi = async (id) => {
 export const categoryBlogsApi = async (id) => {
     return await commonApi("GET", `${serverUrl}/api/get-categoryposts/${id}`, "", '')
 }
+
+export const searchBlogsApi = async (query) => {
+    return await commonApi("GET", `${serverUrl}/api/blogs/search?q=${encodeURIComponent(query)}`, "", '')
+};

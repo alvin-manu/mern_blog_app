@@ -142,3 +142,19 @@ export const getCategoryBlogsById = async (req, res) => {
         console.log(error)
     }
 }
+
+export const searchBlogs = async (req, res) => {
+  try {
+    const query = req.query.q;
+    const results = await Blog.find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        // { category: { $regex: query, $options: 'i' } },
+      ]
+    });
+    return res.json(results);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+    console.log(err)
+  }
+};
