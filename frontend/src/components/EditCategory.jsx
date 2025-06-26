@@ -14,10 +14,18 @@ const EditCategory = ({ item }) => {
     if ((!categoryName, !slug)) {
       toast.warning("Category name and slug should not be empty");
     } else {
+       const token = sessionStorage.getItem("token");
+      const reqheader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+      };
       try {
-        const res = await editCategoryApi(editCategory);
+        const res = await editCategoryApi(editCategory,reqheader);
         if (res.status === 201) {
           toast.success(res.data.message);
+          setopen(!open)
+        }else{
+          toast.error("Unauthorised");
           setopen(!open)
         }
       } catch (error) {

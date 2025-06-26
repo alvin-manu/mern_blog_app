@@ -9,10 +9,18 @@ const DeleteCategory = ({ categoryId }) => {
   });
   //   console.log(categoryId);
   const deleteCategorylist = async () => {
+     const token = sessionStorage.getItem("token");
+      const reqheader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+      };
     try {
-      const res = await deleteCategoryApi(deletCategory);
+      const res = await deleteCategoryApi(deletCategory,reqheader);
       if (res.status === 201) {
         toast.success(res.data.message);
+        setopen(!open)
+      }else{
+        toast.error("Unauthorised");
         setopen(!open)
       }
     } catch (error) {

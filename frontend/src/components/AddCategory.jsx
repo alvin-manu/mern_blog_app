@@ -16,7 +16,12 @@ const AddCategory = () => {
       toast.warning("please enter all the fields");
     } else {
       console.log(category)
-      const res = await addCategoryApi(category);
+       const token = sessionStorage.getItem("token");
+      const reqheader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+      };
+      const res = await addCategoryApi(category, reqheader);
       if (res.status === 201) {
         toast.success(res.data.message);
         navigate('/category')

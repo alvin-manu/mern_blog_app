@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { PencilIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { allBlogApi, deleteBlogApi } from "../Services/allApi";
+import { TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { allBlogApi, deleteAdminBlogApi } from "../Services/allApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 
@@ -18,7 +18,12 @@ const AllBlogs = () => {
   const navigate = useNavigate()
 
   const handledeleteBlog = async(id)=>{
-    const res = await deleteBlogApi(id);
+    const token = sessionStorage.getItem("token");
+      const reqheader = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
+      };
+    const res = await deleteAdminBlogApi(id, reqheader);
     if(res.status === 201){
       toast.success(res.data.message)
     }else{

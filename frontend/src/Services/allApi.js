@@ -21,20 +21,20 @@ export const updateUserApi = async (reqBody, reqheader) => {
     return await commonApi("PUT", `${serverUrl}/api/update-user`, reqBody, reqheader)
 }
 
-export const addCategoryApi = async (reqbody) => {
-    return await commonApi("POST", `${serverUrl}/api/admin/addcategory`, reqbody, "")
+export const addCategoryApi = async (reqbody, reqheader) => {
+    return await commonApi("POST", `${serverUrl}/api/admin/addcategory`, reqbody, reqheader)
 }
 
 export const getAllCategoryApi = async () => {
     return await commonApi("GET", `${serverUrl}/api/admin/getcategory`, "", "")
 }
 
-export const editCategoryApi = async (reqbody) => {
-    return await commonApi("PUT", `${serverUrl}/api/admin/update-category`, reqbody, "")
+export const editCategoryApi = async (reqbody, reqheader) => {
+    return await commonApi("PUT", `${serverUrl}/api/admin/update-category`, reqbody, reqheader)
 }
 
-export const deleteCategoryApi = async (reqbody) => {
-    return await commonApi("DELETE", `${serverUrl}/api/admin/delete-category`, reqbody, "")
+export const deleteCategoryApi = async (reqbody, reqheader) => {
+    return await commonApi("DELETE", `${serverUrl}/api/admin/delete-category`, reqbody, reqheader)
 }
 
 // to add a blog
@@ -52,11 +52,16 @@ export const allBlogApi = async () => {
     return await commonApi('GET', `${serverUrl}/api/admin/allblog`, {}, {})
 }
 
-// delete a blog for admin
+// delete a blog for user
 export const deleteBlogApi = async (id) => {
-    return await commonApi("DELETE", `${serverUrl}/api/admin/delete-blog/${id}`, {}, "")
+    return await commonApi("DELETE", `${serverUrl}/api/delete-blog/${id}`, {}, "")
 }
 
+
+// delete a blog for admin
+export const deleteAdminBlogApi = async (id, reqheader) => {
+    return await commonApi("DELETE", `${serverUrl}/api/admin/deleteadminblog/${id}`, {}, reqheader)
+}
 // to get userlist to admin
 
 export const getAllUsersApi = (searchTerm = "", reqheader) => {

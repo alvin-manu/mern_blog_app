@@ -3,7 +3,7 @@ import { banUser, getAllUsers, getUser, getUserById, loginUser, registerUser, un
 import { authMiddleware } from '../middleware/authmiddleware.js';
 import upload from '../config/multer.js';
 import { addCategory, deleteCategory, editCategory, getCategory } from '../Controllers/categoryController.js';
-import { addBlog, allBlog, blogLikeController, deleteBlog, editBlog, getCategoryBlogsById, getUserBlogsById, getUserPosts, searchBlogs, viewBlog } from '../Controllers/blogController.js';
+import { addBlog, allBlog, blogLikeController, deleteAdminBlog, deleteBlog, editBlog, getCategoryBlogsById, getUserBlogsById, getUserPosts, searchBlogs, viewBlog } from '../Controllers/blogController.js';
 import { addCommentController, getComments } from '../Controllers/commentController.js';
 
 
@@ -30,13 +30,14 @@ router.put('/:id/editblog', authMiddleware, upload.single('featuredImage') ,edit
 
 
 // admin
-router.post('/admin/addcategory', addCategory)
+router.post('/admin/addcategory', authMiddleware, addCategory)
 router.get('/admin/getcategory', getCategory)
-router.put('/admin/update-category',  editCategory)
-router.delete('/admin/delete-category',  deleteCategory)
+router.put('/admin/update-category', authMiddleware,  editCategory)
+router.delete('/admin/delete-category', authMiddleware, deleteCategory)
 router.get('/admin/getallusers', authMiddleware, getAllUsers )
 router.get('/admin/allblog' ,allBlog)
-router.delete('/admin/delete-blog/:id', deleteBlog)
+router.delete('/delete-blog/:id', deleteBlog)
+router.delete('/admin/deleteadminblog/:id', authMiddleware, deleteAdminBlog)
 router.patch('/admin/banuser/:id', authMiddleware, banUser)
 router.patch('/admin/unbanuser/:id', authMiddleware, unbanUser)
 // router.put('/admin/updatemodel',  updateUserModel)
