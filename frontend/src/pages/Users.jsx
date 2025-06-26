@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState([]);
+  const [userStatus, setUserStatus] = useState(0);
 
   const getAllUserData = async () => {
     const token = sessionStorage.getItem("token");
@@ -35,7 +36,7 @@ const Users = () => {
 
   useEffect(() => {
     getAllUserData();
-  }, []);
+  }, [userStatus]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,7 +54,6 @@ const Users = () => {
 
   return (
     <div className=" p-3 md:p-6 bg-white rounded-xl border border-gray-200">
-      {allUsers.length > 0 ? (
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="md:flex justify-between items-center mb-6">
@@ -91,8 +91,9 @@ const Users = () => {
               </svg>
             </div>
           </div>
+        </div>
 
-          {/* Users Table */}
+      {allUsers.length > 0 ? (
           <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -199,11 +200,11 @@ const Users = () => {
                       </button>
                       {user?.isBanned ? (
                         <button className="text-red-600 hover:text-red-900 flex items-center">
-                          <UnbanUser id={user?._id} user={user?.name} />
+                          <UnbanUser id={user?._id} user={user?.name} setUserStatus={setUserStatus} />
                         </button>
                       ) : (
                         <button className="text-red-600 hover:text-red-900 flex items-center">
-                          <BanUser id={user?._id} user={user?.name} />
+                          <BanUser id={user?._id} user={user?.name} setUserStatus={setUserStatus} />
                         </button>
                       )}
                     </td>
@@ -212,7 +213,6 @@ const Users = () => {
               </tbody>
             </table>
           </div>
-        </div>
       ) : (
         <div>
           {" "}

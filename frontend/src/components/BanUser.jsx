@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { banUserApi } from "../Services/allApi";
 import { toast } from "react-toastify";
 
-const BanUser = ({ id, user }) => {
+const BanUser = ({ id, user, setUserStatus }) => {
   const [open, setopen] = useState(false);
 
   const banUserfn = async () => {
-      console.log("first")
     try {
       const token = sessionStorage.getItem("token");
       const reqheader = {
@@ -16,6 +15,7 @@ const BanUser = ({ id, user }) => {
       const res = await banUserApi(id, reqheader);
       if (res.status === 200) {
         toast.success(res.data.message);
+        setUserStatus((prev)=> prev+1)
         setopen(!open)
       } else if (res.status === 404) {
         toast.warning(res.data.message);

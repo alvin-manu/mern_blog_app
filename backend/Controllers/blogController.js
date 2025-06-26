@@ -35,10 +35,41 @@ export const addBlog = async (req, res) => {
 }
 
 export const editBlog = async (req, res) => {
-    try {
 
+    // const { _id } = req.user
+    const id = req.params.id
+    const { title, category, content } = req.body;
+    let featuredImage;
+    try {
+        const blog = await Blog.findOne({_id:id});
+        console.log(blog)
+
+        if (req.file) {
+            // Upload an image
+            const uploadResult = await cloudinary.uploader
+                .upload(
+                    req.file.path,
+                    { folder: 'blog', resource_type: 'auto' }
+                )
+                .catch((error) => {
+                    console.log(error);
+                });
+            featuredImage = uploadResult.secure_url
+        }else{
+            featuredImage = req.body.featuredImage
+            console.log("inside featuredimage")
+        }
+            blog.title= title,
+            blog.category= category,
+            blog.featuredImage= featuredImage,
+            blog.content= content
+
+        await blog.save()
+        
+        return res.status(201).json({ message: "Blog Updated Successfully" })
     } catch (error) {
-        res.status(500).json(error)
+        console.log(error)
+       return res.status(500).json(error)
     }
 }
 
@@ -62,7 +93,7 @@ export const deleteBlog = async (req, res) => {
 // allblog display for admin
 export const allBlog = async (req, res) => {
     try {
-        const result = await Blog.find().populate({ path: 'user', select: 'name avatar' })
+        const result = await Blog.find().sort({ createdAt: -1 }).populate({ path: 'user', select: 'name avatar' })
             .populate({ path: 'category', select: 'categoryName' });
         if (result) {
             return res.status(201).json(result)
@@ -115,7 +146,7 @@ export const getUserBlogsById = async (req, res) => {
         const blogArticles = await Blog.find({ user: id }).populate({ path: 'user', select: 'name avatar' })
             .populate({ path: 'category', select: 'categoryName' })
         if (blogArticles) {
-            return res.status(201).json({blogArticles})
+            return res.status(201).json({ blogArticles })
         } else {
             return res.status(401).json({ message: "Error" })
         }
@@ -133,7 +164,7 @@ export const getCategoryBlogsById = async (req, res) => {
         const blogArticles = await Blog.find({ category: id }).populate({ path: 'user', select: 'name avatar' })
             .populate({ path: 'category', select: 'categoryName' })
         if (blogArticles) {
-            return res.status(201).json({blogArticles})
+            return res.status(201).json({ blogArticles })
         } else {
             return res.status(401).json({ message: "Error" })
         }
@@ -144,17 +175,40 @@ export const getCategoryBlogsById = async (req, res) => {
 }
 
 export const searchBlogs = async (req, res) => {
-  try {
-    const query = req.query.q;
-    const results = await Blog.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        // { category: { $regex: query, $options: 'i' } },
-      ]
-    });
-    return res.json(results);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-    console.log(err)
-  }
+    try {
+        const query = req.query.q;
+        const results = await Blog.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } },
+                // { category: { $regex: query, $options: 'i' } },
+            ]
+        });
+        return res.json(results);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err)
+    }
+};
+
+    
+    export const blogLikeController = async (req, res) => {
+    const { _id } = req.user;
+    try {
+        const blog = await Blog.findById(req.params.id);
+
+        if (!blog) return res.status(404).json({ message: 'Blog not found' });
+
+        const alreadyLiked = blog.likes.includes(_id);
+
+        if (alreadyLiked) {
+            blog.likes.pull(_id); // remove like
+        } else {
+            blog.likes.push(_id); // add like
+        }
+
+        await blog.save();
+        res.status(201).json({ message: alreadyLiked ? 'Unliked' : 'Liked', likes: blog.likes.length });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to toggle like' });
+    }
 };

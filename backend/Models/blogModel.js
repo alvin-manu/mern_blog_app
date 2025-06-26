@@ -7,9 +7,9 @@ const blogSchema = mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Category',
+        ref: 'Category',
         required: true,
-    }, 
+    },
     featuredImage: {
         type: String,
         required: true,
@@ -19,10 +19,16 @@ const blogSchema = mongoose.Schema({
         required: true,
     },
     user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    required: true
-  }
-},{timestamps:true})
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    likes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+        }
+    ]
+}, { timestamps: true })
 
 export const Blog = mongoose.model("Blog", blogSchema)

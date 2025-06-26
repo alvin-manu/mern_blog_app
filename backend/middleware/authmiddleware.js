@@ -7,8 +7,6 @@ export const authMiddleware = async (req, res, next) => {
     // 1. Get the token from headers
     const token = req.headers.authorization?.split(" ")[1]; // Format: "Bearer token"
 
-    console.log(token)
-
     // 2. Check if token exists
     if (!token) {
       return res.status(401).json({ message: "Unauthorized - No token provided" });

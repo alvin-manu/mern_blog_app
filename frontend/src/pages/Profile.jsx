@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import { useEffect } from "react";
 import { getUser, getUserPosts, updateUserApi } from "../Services/allApi";
 import { toast } from "react-toastify";
+import DeleteBlog from "../components/DeleteBlog";
+import { useNavigate } from "react-router";
 
 export default function Profile() {
   // edit state true or false
@@ -15,6 +17,7 @@ export default function Profile() {
   const [form, setForm] = useState({});
   const [blogs, setBlogs] = useState();
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   // fetching user data
   const fetchUser = async () => {
@@ -112,13 +115,9 @@ export default function Profile() {
     setedit(!edit);
   };
 
-  // const fetchUserBlogs = async ()=>{
-  //   const token = sessionStorage.getItem("token");
-  //   const reqheader = {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${token ? token : ""}`, // Send token to backend
-  //   };
-  // }
+  const handleEdit = (id) => {
+    navigate(`/blog/${id}/edit`);
+  };
 
   return (
     <>
@@ -189,13 +188,13 @@ export default function Profile() {
                 <p className="text-gray-600 text-lg">{user?.bio}</p>
                 {user?.websiteLink && (
                   <a
-                    href={user.websiteLink}
+                    href={user?.websiteLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block mt-2 text-blue-600 hover:text-blue-800 transition-colors"
                   >
                     <i className="fas fa-link mr-2"></i>
-                    {new URL(user.websiteLink).hostname}
+                    {new URL(user?.websiteLink).hostname}
                   </a>
                 )}
               </div>
@@ -287,17 +286,66 @@ export default function Profile() {
           <div className="pb-4 mb-8">
             <h2 className="text-3xl font-bold text-gray-800 border-l-4 border-blue-600 pl-4">
               My Articles
-            </h2> <br />
+            </h2>{" "}
+            <br />
             <hr />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {blogs?.length >0 ?
-            blogs?.map((item)=>(
-            <ArticleCard blog = {item}/>
-            )):
-            <p>No Posts Found</p> }
-            
+            {blogs?.length > 0 ? (
+              blogs?.map((item) => (
+                <div
+                  key={item._id}
+                  className="relative group overflow-hidden rounded-xl"
+                >
+                  {/* Original Article Card */}
+                  <ArticleCard blog={item} />
+
+                  {/* Edit/Delete Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <div className="flex space-x-3 justify-content-between w-100">
+                      <button
+                        onClick={() => handleEdit(item._id)}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                      >
+                        <i class="fas fa-edit me-2"></i>
+                        Edit
+                      </button>
+                      <DeleteBlog blogId={item._id} />
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 py-12 text-center">
+                <div className="bg-gray-100 rounded-xl p-8 max-w-md mx-auto">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-16 w-16 mx-auto text-gray-400 mb-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">
+                    No Articles Found
+                  </h3>
+                  <p className="text-gray-500">
+                    You haven't published any articles yet. Start writing your
+                    first article!
+                  </p>
+                  <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200">
+                    Create Article
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

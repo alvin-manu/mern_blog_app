@@ -42,6 +42,11 @@ export const addBlogApi = async (reqBody, reqHeader) => {
     return await commonApi('POST', `${serverUrl}/api/addblog`, reqBody, reqHeader)
 }
 
+// to edit a blog
+export const editBlogApi = async (reqBody, reqHeader, id) => {
+    return await commonApi('PUT', `${serverUrl}/api/${id}/editblog`, reqBody, reqHeader)
+}
+
 // to get all blog to admin
 export const allBlogApi = async () => {
     return await commonApi('GET', `${serverUrl}/api/admin/allblog`, {}, {})
@@ -57,7 +62,7 @@ export const deleteBlogApi = async (id) => {
 export const getAllUsersApi = (searchTerm = "", reqheader) => {
     // Only create query string if searchTerm exists
     const queryString = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
-    return commonApi("GET",`${serverUrl}/api/admin/getallusers${queryString}`,"",reqheader);
+    return commonApi("GET", `${serverUrl}/api/admin/getallusers${queryString}`, "", reqheader);
 };
 
 export const viewBlogArticleApi = async (id) => {
@@ -91,3 +96,19 @@ export const categoryBlogsApi = async (id) => {
 export const searchBlogsApi = async (query) => {
     return await commonApi("GET", `${serverUrl}/api/blogs/search?q=${encodeURIComponent(query)}`, "", '')
 };
+
+// adding comment
+export const addCommentApi = async (reqBody, reqHeader) => {
+    return await commonApi('POST', `${serverUrl}/api/blog/comment`, reqBody, reqHeader)
+}
+
+// getting comments
+
+export const getBlogCommmentsApi = async (id) => {
+    return await commonApi('GET', `${serverUrl}/api/getcomments/${id}`, {}, "")
+}
+
+export const patchLikeBlogsApi = async (blogId, reqHeader) => {
+    return await commonApi('PATCH', `${serverUrl}/api/blogs/${blogId}/like`, {}, reqHeader)
+}
+

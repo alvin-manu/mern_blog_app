@@ -1,44 +1,14 @@
 import React, { useEffect, useState } from "react";
 import article1 from "../assets/article1.jpg";
-import { useParams } from "react-router";
-import { viewBlogArticleApi } from "../Services/allApi";
+import { Link, useParams } from "react-router";
+import { patchLikeBlogsApi, viewBlogArticleApi } from "../Services/allApi";
+import Comment from "../components/Comment";
+import { toast } from "react-toastify";
 
 const BlogPage = () => {
   // Like functionality state
-  const [likes, setLikes] = useState(2454);
+  const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-
-  // Comment functionality state
-  const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      author: "Sarah Johnson",
-      text: "This is exactly what I needed! Thanks for the detailed guide.",
-      timestamp: "2h ago",
-    },
-  ]);
-
-  // Handle like button click
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-  };
-
-  // Handle comment submission
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (commentText.trim()) {
-      const newComment = {
-        id: comments.length + 1,
-        author: "Current User",
-        text: commentText,
-        timestamp: "Just now",
-      };
-      setComments([...comments, newComment]);
-      setCommentText("");
-    }
-  };
 
   const { id } = useParams();
   const [blogArticle, setBlogArticle] = useState({});
@@ -47,8 +17,45 @@ const BlogPage = () => {
     const response = await viewBlogArticleApi(id);
     if (response.status === 201) {
       const result = response.data;
-      console.log(result);
       setBlogArticle(result[0]);
+
+      const tokenUser = JSON.parse(sessionStorage.getItem("existingUser")); 
+
+      if(tokenUser){
+        const userId = tokenUser?._id;
+        console.log(userId)
+        // ✅ Check if user has liked the post
+        const isUserLiked = result[0]?.likes?.includes(userId);
+        console.log(isUserLiked)
+        isUserLiked ? setIsLiked(true) : "";
+        setLikes(result[0]?.likes?.length || 0);
+      }
+    }
+  };
+
+  const likeBlogfn = async () => {
+    const token = sessionStorage.getItem("token");
+    const reqheader = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token ? token : ""}`,
+    };
+
+    try {
+      const res = await patchLikeBlogsApi(id, reqheader);
+
+      if(res.status === 201){
+        const result = res.data;
+        console.log(result);
+        setLikes(result.likes);
+        setIsLiked(!isLiked);
+      }
+      else if(res.status === 401){
+        toast.error("Please Login to perform the action")
+      }else{
+        toast.error("Something wrong happened")
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -73,7 +80,12 @@ const BlogPage = () => {
               })}
             </time>
             <span className="mx-2">•</span>
-            <span>5 min read</span>
+            <Link
+                  to={`/category/${blogArticle?.category?.categoryName.toLowerCase()}`}
+                  state={{ data: blogArticle.category }}
+                >
+                <span>{blogArticle?.category?.categoryName}</span>
+                </Link>
           </div>
         </header>
         <img
@@ -93,10 +105,10 @@ const BlogPage = () => {
         {/* Interactions Section */}
         <div className="flex items-center justify-between mb-8 border-t border-b border-gray-200 py-6">
           <button
-            onClick={handleLike}
-            className={`flex items-center space-x-2 ${
+            onClick={likeBlogfn}
+            className={`flex items-center space-x-2 transition-colors ${
               isLiked ? "text-red-500" : "text-gray-600 hover:text-red-500"
-            } transition-colors`}
+            }`}
           >
             <svg
               className="w-5 h-5"
@@ -132,56 +144,7 @@ const BlogPage = () => {
           </button>
         </div>
 
-        {/* Comments Section */}
-        <section className="mb-12">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">
-            {comments.length} Comment{comments.length !== 1 ? "s" : ""}
-          </h3>
-
-          {/* Existing Comments */}
-          <div className="space-y-6 mb-8">
-            {comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="border-b border-gray-100 pb-6 last:border-0"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-gray-900">
-                    {comment.author}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {comment.timestamp}
-                  </span>
-                </div>
-                <p className="text-gray-700">{comment.text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Comment Form */}
-          <form
-            onSubmit={handleCommentSubmit}
-            className="bg-gray-50 p-6 rounded-lg"
-          >
-            <h4 className="text-lg font-medium text-gray-900 mb-4">
-              Write a thoughtful comment...
-            </h4>
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
-              rows="4"
-              placeholder="Add to the discussion..."
-              required
-            />
-            <button
-              type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Post Comment
-            </button>
-          </form>
-        </section>
+        <Comment blogId={blogArticle?._id} />
       </main>
     </div>
   );

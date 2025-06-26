@@ -41,6 +41,7 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         } else {
             const userInfo = {
+                _id:existingUser._id,
                 name: existingUser.name,
                 email: existingUser.email,
                 websiteLink: existingUser.websiteLink,
@@ -104,7 +105,6 @@ export const updateUser = async (req, res) => {
                 .upload(
                     req.file.path,
                     { folder: 'blog', resource_type: 'auto' }
-
                 )
                 .catch((error) => {
                     console.log(error);

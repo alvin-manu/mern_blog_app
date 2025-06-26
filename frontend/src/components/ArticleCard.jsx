@@ -43,8 +43,7 @@ function ArticleCard({ blog }) {
           ) : (
             <p className="text-gray-600 md:text-lg mb-4 line-clamp-3 flex-grow text-sm">
               'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-              incidunt, sit dignissimos labore odit pariatur quae ullam
-              praesentium illo saepe'
+              incidunt'
             </p>
           )}
 

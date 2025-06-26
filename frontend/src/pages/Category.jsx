@@ -38,13 +38,13 @@ const Category = () => {
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">
                     Category Name
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">
                     Slug
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase">
                     Actions
                   </th>
                 </tr>
@@ -67,7 +67,7 @@ const Category = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end space-x-3">
+                        <div className="flex space-x-3">
                           <EditCategory item={item}/>           
                           <DeleteCategory categoryId={item._id}/>
                             

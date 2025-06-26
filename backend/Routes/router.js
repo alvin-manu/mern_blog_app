@@ -3,7 +3,8 @@ import { banUser, getAllUsers, getUser, getUserById, loginUser, registerUser, un
 import { authMiddleware } from '../middleware/authmiddleware.js';
 import upload from '../config/multer.js';
 import { addCategory, deleteCategory, editCategory, getCategory } from '../Controllers/categoryController.js';
-import { addBlog, allBlog, deleteBlog, getCategoryBlogsById, getUserBlogsById, getUserPosts, searchBlogs, viewBlog } from '../Controllers/blogController.js';
+import { addBlog, allBlog, blogLikeController, deleteBlog, editBlog, getCategoryBlogsById, getUserBlogsById, getUserPosts, searchBlogs, viewBlog } from '../Controllers/blogController.js';
+import { addCommentController, getComments } from '../Controllers/commentController.js';
 
 
 export const router = new express.Router();
@@ -21,6 +22,11 @@ router.get('/viewblog/:id', viewBlog )
 router.get('/get-userpostsbyid/:id', getUserBlogsById )
 router.get('/get-categoryposts/:id', getCategoryBlogsById )
 router.get('/blogs/search' ,searchBlogs)
+router.post('/blog/comment',authMiddleware, addCommentController)
+router.get('/getcomments/:id', getComments )
+router.patch('/blogs/:id/like', authMiddleware, blogLikeController)
+router.put('/:id/editblog', authMiddleware, upload.single('featuredImage') ,editBlog)
+
 
 
 // admin

@@ -28,8 +28,8 @@ const Home = () => {
   return (
     <>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-4 mt-3">
-        {blogs.length > 0 ? (
-          blogs.map((item) => <ArticleCard blog={item} />)
+        {blogs?.length > 0 ? (
+          blogs?.map((item) => <ArticleCard blog={item} />)
         ) : (
           <div>No Data Found</div>
         )}

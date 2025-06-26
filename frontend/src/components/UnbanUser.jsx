@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { UnbanUserApi } from "../Services/allApi";
 import { toast } from "react-toastify";
 
-const UnbanUser = ({ id, user }) => {
+const UnbanUser = ({ id, user , setUserStatus}) => {
   const [open, setopen] = useState(false);
 
   const UnbanUserfn = async () => {
@@ -17,6 +17,7 @@ const UnbanUser = ({ id, user }) => {
       if (res.status === 200) {
         toast.success(res.data.message);
         setopen(!open)
+        setUserStatus(prev => prev + 1)
       } else if (res.status === 404) {
         toast.warning(res.data.message);
       } else if (res.status === 401) {

@@ -17,6 +17,7 @@ import Users from "./pages/Users";
 import UserProfile from "./pages/UserProfile";
 import SingleCategory from "./pages/SingleCategory";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import EditBlog from "./pages/EditBlog";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/userprofile/:id" element={<UserProfile/>} />
           <Route path="/category/:categoryName" element={<SingleCategory/>} />
+          <Route path="/blog/:id/edit" element={<EditBlog />} />
 
           <Route path="/search" element={<SearchResultsPage />} />
 

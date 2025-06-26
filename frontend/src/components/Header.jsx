@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { removeUser } from "../redux/user/userSlice";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import dailydraft from "../assets/dailydraft.svg"
 
 const Header = ({ toggleSidebar }) => {
   const user = useSelector((state) => state.user);
@@ -62,8 +63,8 @@ const Header = ({ toggleSidebar }) => {
 
             <Link to="/" className="flex items-center">
               <img
-                src="https://flowbite.com/docs/images/logo.svg"
-                className="h-8 mr-3"
+                src={dailydraft}
+                className="h-9 mr-1"
                 alt="Logo"
               />
               <span className="self-center text-xl font-bold text-gray-800 whitespace-nowrap">
@@ -122,7 +123,7 @@ const Header = ({ toggleSidebar }) => {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100">
                     <div className="p-4 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">
-                        {user?.user.name}
+                        {user?.user?.name}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
                         {user?.user?.email}
