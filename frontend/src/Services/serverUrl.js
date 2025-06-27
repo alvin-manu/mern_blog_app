@@ -1,1 +1,1 @@
-export const serverUrl = "http://localhost:5000"
+export const serverUrl = "https://mern-blog-app-l1vu.onrender.com/"
